@@ -1,0 +1,19 @@
+# Machine specific, created during setup
+.env
+
+# Airflow runtime output
+logs/
+config/airflow.cfg
+plugins/
+
+# Pipeline output
+artifacts/*
+!artifacts/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+.DS_Store
+.idea/

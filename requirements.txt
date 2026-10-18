@@ -1,0 +1,3 @@
+# The Airflow image already ships pandas, numpy, scikit-learn, joblib and scipy.
+kneed==0.8.5
+pytest==8.4.2

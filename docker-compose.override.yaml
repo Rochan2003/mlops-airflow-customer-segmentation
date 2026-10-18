@@ -1,0 +1,27 @@
+# Adds three things to Airflow's official docker-compose.yaml:
+#   1. builds the local image so kneed is available inside the containers
+#   2. mounts ./artifacts so models and metrics written by tasks land on the host
+#   3. defines the fs_default connection that FileSensor needs. Airflow 3 no
+#      longer creates default connections, so without this the sensor fails
+#      with "The conn_id `fs_default` isn't defined".
+x-segmentation: &segmentation
+  build: .
+  image: airflow-segmentation:3.3.2
+  environment:
+    AIRFLOW_CONN_FS_DEFAULT: '{"conn_type": "fs", "extra": {"path": "/"}}'
+  volumes:
+    - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
+    - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
+    - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
+    - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
+    - ${AIRFLOW_PROJ_DIR:-.}/artifacts:/opt/airflow/artifacts
+    - ${AIRFLOW_PROJ_DIR:-.}/tests:/opt/airflow/tests
+
+services:
+  airflow-apiserver:     *segmentation
+  airflow-scheduler:     *segmentation
+  airflow-dag-processor: *segmentation
+  airflow-worker:        *segmentation
+  airflow-triggerer:     *segmentation
+  airflow-init:          *segmentation
+  airflow-cli:           *segmentation
